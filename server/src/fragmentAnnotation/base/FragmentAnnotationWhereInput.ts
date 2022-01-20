@@ -39,6 +39,7 @@ class FragmentAnnotationWhereInput {
   })
   targetId?: StringNullableFilter;
 
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -49,5 +50,6 @@ class FragmentAnnotationWhereInput {
     nullable: true,
   })
   targetSrc?: StringFilter;
+
 }
 export { FragmentAnnotationWhereInput };

@@ -50,6 +50,7 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+
   targetSrc?: SortOrder;
 
   @ApiProperty({
@@ -59,6 +60,7 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+
   updatedAt?: SortOrder;
 }
 

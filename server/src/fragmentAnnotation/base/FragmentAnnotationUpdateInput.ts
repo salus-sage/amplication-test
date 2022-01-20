@@ -25,6 +25,7 @@ class FragmentAnnotationUpdateInput {
   })
   targetId?: string | null;
 
+
   @ApiProperty({
     required: false,
     type: String,
@@ -35,5 +36,6 @@ class FragmentAnnotationUpdateInput {
     nullable: true,
   })
   targetSrc?: string;
+
 }
 export { FragmentAnnotationUpdateInput };
