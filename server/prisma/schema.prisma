@@ -1,0 +1,57 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     String[]
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Project {
+  createdAt DateTime      @default(now())
+  id        String        @id @default(cuid())
+  media     MediaRecord[]
+  name      String
+  updatedAt DateTime      @updatedAt
+}
+
+model Label {
+  createdAt    DateTime      @default(now())
+  id           String        @id @default(cuid())
+  labelName    String
+  mediaRecords MediaRecord[]
+  updatedAt    DateTime      @updatedAt
+}
+
+model MediaRecord {
+  createdAt   DateTime  @default(now())
+  description String?
+  filename    String?
+  id          String    @id @default(cuid())
+  labels      Label[]
+  location    String?
+  projects    Project[]
+  tags        Tag[]
+  type        String?
+  updatedAt   DateTime  @updatedAt
+  url         String
+}
+
+model Tag {
+  createdAt    DateTime      @default(now())
+  id           String        @id @default(cuid())
+  mediaRecords MediaRecord[]
+  updatedAt    DateTime      @updatedAt
+  value        String?
+}
