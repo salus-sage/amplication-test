@@ -14,6 +14,13 @@ import { DeleteFragmentAnnotationArgs } from "./DeleteFragmentAnnotationArgs";
 import { FragmentAnnotationFindManyArgs } from "./FragmentAnnotationFindManyArgs";
 import { FragmentAnnotationFindUniqueArgs } from "./FragmentAnnotationFindUniqueArgs";
 import { FragmentAnnotation } from "./FragmentAnnotation";
+import { LabelFindManyArgs } from "../../label/base/LabelFindManyArgs";
+import { Label } from "../../label/base/Label";
+import { MediaRecordFindManyArgs } from "../../mediaRecord/base/MediaRecordFindManyArgs";
+import { MediaRecord } from "../../mediaRecord/base/MediaRecord";
+import { TagFindManyArgs } from "../../tag/base/TagFindManyArgs";
+import { Tag } from "../../tag/base/Tag";
+import { User } from "../../user/base/User";
 import { FragmentAnnotationService } from "../fragmentAnnotation.service";
 
 @graphql.Resolver(() => FragmentAnnotation)
@@ -120,7 +127,15 @@ export class FragmentAnnotationResolverBase {
     // @ts-ignore
     return await this.service.create({
       ...args,
-      data: args.data,
+      data: {
+        ...args.data,
+
+        creator: args.data.creator
+          ? {
+              connect: args.data.creator,
+            }
+          : undefined,
+      },
     });
   }
 
@@ -159,7 +174,15 @@ export class FragmentAnnotationResolverBase {
       // @ts-ignore
       return await this.service.update({
         ...args,
-        data: args.data,
+        data: {
+          ...args.data,
+
+          creator: args.data.creator
+            ? {
+                connect: args.data.creator,
+              }
+            : undefined,
+        },
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
@@ -191,5 +214,107 @@ export class FragmentAnnotationResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [Label])
+  @nestAccessControl.UseRoles({
+    resource: "FragmentAnnotation",
+    action: "read",
+    possession: "any",
+  })
+  async bodyLabels(
+    @graphql.Parent() parent: FragmentAnnotation,
+    @graphql.Args() args: LabelFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<Label[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "Label",
+    });
+    const results = await this.service.findBodyLabels(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
+  }
+
+  @graphql.ResolveField(() => [MediaRecord])
+  @nestAccessControl.UseRoles({
+    resource: "FragmentAnnotation",
+    action: "read",
+    possession: "any",
+  })
+  async mediaRecord(
+    @graphql.Parent() parent: FragmentAnnotation,
+    @graphql.Args() args: MediaRecordFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<MediaRecord[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "MediaRecord",
+    });
+    const results = await this.service.findMediaRecord(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
+  }
+
+  @graphql.ResolveField(() => [Tag])
+  @nestAccessControl.UseRoles({
+    resource: "FragmentAnnotation",
+    action: "read",
+    possession: "any",
+  })
+  async bodyTags(
+    @graphql.Parent() parent: FragmentAnnotation,
+    @graphql.Args() args: TagFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<Tag[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "Tag",
+    });
+    const results = await this.service.findBodyTags(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
+  }
+
+  @graphql.ResolveField(() => User, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "FragmentAnnotation",
+    action: "read",
+    possession: "any",
+  })
+  async creator(
+    @graphql.Parent() parent: FragmentAnnotation,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<User | null> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "User",
+    });
+    const result = await this.service.getCreator(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return permission.filter(result);
   }
 }

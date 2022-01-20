@@ -1,11 +1,13 @@
+import { FragmentAnnotation } from "../fragmentAnnotation/FragmentAnnotation";
 import { Project } from "../project/Project";
 
 export type User = {
-  contributor?: Array<Project>;
+  contributor?: Array<User>;
   createdAt: Date;
-  firstName: string | null;
+  fragmentAnnotations?: Array<FragmentAnnotation>;
+  fullName: string | null;
   id: string;
-  lastName: string | null;
+  user?: User | null;
   projects?: Array<Project>;
   roles: Array<string>;
   updatedAt: Date;

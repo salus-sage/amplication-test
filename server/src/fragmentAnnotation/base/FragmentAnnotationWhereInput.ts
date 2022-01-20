@@ -1,11 +1,26 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { StringFilter } from "../../util/StringFilter";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+import { ValidateNested, IsOptional, IsEnum } from "class-validator";
 import { Type } from "class-transformer";
-import { IsOptional } from "class-validator";
+import { StringFilter } from "../../util/StringFilter";
+import { EnumFragmentAnnotationBodyPurpose } from "./EnumFragmentAnnotationBodyPurpose";
 import { StringNullableFilter } from "../../util/StringNullableFilter";
+import { EnumFragmentAnnotationSelectorType } from "./EnumFragmentAnnotationSelectorType";
 @InputType()
 class FragmentAnnotationWhereInput {
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  creator?: UserWhereUniqueInput;
+
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -16,6 +31,54 @@ class FragmentAnnotationWhereInput {
     nullable: true,
   })
   id?: StringFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumFragmentAnnotationBodyPurpose,
+  })
+  @IsEnum(EnumFragmentAnnotationBodyPurpose)
+  @IsOptional()
+  @Field(() => EnumFragmentAnnotationBodyPurpose, {
+    nullable: true,
+  })
+  bodyPurpose?: "Tagging" | "Commenting" | "Describing";
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  selectorConformsTo?: StringNullableFilter;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumFragmentAnnotationSelectorType,
+  })
+  @IsEnum(EnumFragmentAnnotationSelectorType)
+  @IsOptional()
+  @Field(() => EnumFragmentAnnotationSelectorType, {
+    nullable: true,
+  })
+  selectorType?:
+    | "FragmentSelector"
+    | "CssSelector"
+    | "XPathSelector"
+    | "TextQuoteSelector";
+
+  @ApiProperty({
+    required: false,
+    type: StringNullableFilter,
+  })
+  @Type(() => StringNullableFilter)
+  @IsOptional()
+  @Field(() => StringNullableFilter, {
+    nullable: true,
+  })
+  selectorValue?: StringNullableFilter;
 
   @ApiProperty({
     required: false,
@@ -39,7 +102,6 @@ class FragmentAnnotationWhereInput {
   })
   targetId?: StringNullableFilter;
 
-
   @ApiProperty({
     required: false,
     type: StringFilter,
@@ -50,6 +112,5 @@ class FragmentAnnotationWhereInput {
     nullable: true,
   })
   targetSrc?: StringFilter;
-
 }
 export { FragmentAnnotationWhereInput };

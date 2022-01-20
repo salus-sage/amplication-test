@@ -15,6 +15,8 @@ import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserUpdateInput } from "./UserUpdateInput";
 import { User } from "./User";
+import { FragmentAnnotationWhereInput } from "../../fragmentAnnotation/base/FragmentAnnotationWhereInput";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 import { ProjectWhereInput } from "../../project/base/ProjectWhereInput";
 import { Project } from "../../project/base/Project";
 @swagger.ApiBearerAuth()
@@ -60,12 +62,26 @@ export class UserControllerBase {
       );
     }
     return await this.service.create({
-      data: data,
+      data: {
+        ...data,
+
+        user: data.user
+          ? {
+              connect: data.user,
+            }
+          : undefined,
+      },
       select: {
         createdAt: true,
-        firstName: true,
+        fullName: true,
         id: true,
-        lastName: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
         roles: true,
         updatedAt: true,
         username: true,
@@ -107,9 +123,15 @@ export class UserControllerBase {
       ...args,
       select: {
         createdAt: true,
-        firstName: true,
+        fullName: true,
         id: true,
-        lastName: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
         roles: true,
         updatedAt: true,
         username: true,
@@ -146,9 +168,15 @@ export class UserControllerBase {
       where: params,
       select: {
         createdAt: true,
-        firstName: true,
+        fullName: true,
         id: true,
-        lastName: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
         roles: true,
         updatedAt: true,
         username: true,
@@ -203,12 +231,26 @@ export class UserControllerBase {
     try {
       return await this.service.update({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
+        },
         select: {
           createdAt: true,
-          firstName: true,
+          fullName: true,
           id: true,
-          lastName: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
           roles: true,
           updatedAt: true,
           username: true,
@@ -246,9 +288,15 @@ export class UserControllerBase {
         where: params,
         select: {
           createdAt: true,
-          firstName: true,
+          fullName: true,
           id: true,
-          lastName: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
+
           roles: true,
           updatedAt: true,
           username: true,
@@ -276,7 +324,7 @@ export class UserControllerBase {
     possession: "any",
   })
   @swagger.ApiQuery({
-    type: () => ProjectWhereInput,
+    type: () => UserWhereInput,
     style: "deepObject",
     explode: true,
   })
@@ -284,28 +332,30 @@ export class UserControllerBase {
     @common.Req() request: Request,
     @common.Param() params: UserWhereUniqueInput,
     @nestAccessControl.UserRoles() userRoles: string[]
-  ): Promise<Project[]> {
-    const query: ProjectWhereInput = request.query;
+  ): Promise<User[]> {
+    const query: UserWhereInput = request.query;
     const permission = this.rolesBuilder.permission({
       role: userRoles,
       action: "read",
       possession: "any",
-      resource: "Project",
+      resource: "User",
     });
     const results = await this.service.findContributor(params.id, {
       where: query,
       select: {
         createdAt: true,
+        fullName: true,
         id: true,
-        name: true,
 
-        owner: {
+        user: {
           select: {
             id: true,
           },
         },
 
+        roles: true,
         updatedAt: true,
+        username: true,
       },
     });
     return results.map((result) => permission.filter(result));
@@ -419,6 +469,194 @@ export class UserControllerBase {
   ): Promise<void> {
     const data = {
       contributor: {
+        disconnect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "User",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"User"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Get("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiQuery({
+    type: () => FragmentAnnotationWhereInput,
+    style: "deepObject",
+    explode: true,
+  })
+  async findManyFragmentAnnotations(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput,
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<FragmentAnnotation[]> {
+    const query: FragmentAnnotationWhereInput = request.query;
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "FragmentAnnotation",
+    });
+    const results = await this.service.findFragmentAnnotations(params.id, {
+      where: query,
+      select: {
+        createdAt: true,
+
+        creator: {
+          select: {
+            id: true,
+          },
+        },
+
+        id: true,
+        bodyPurpose: true,
+        selectorConformsTo: true,
+        selectorType: true,
+        selectorValue: true,
+        targetFormat: true,
+        targetId: true,
+        targetSrc: true,
+        updatedAt: true,
+      },
+    });
+    return results.map((result) => permission.filter(result));
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Post("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async createFragmentAnnotations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        connect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "User",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"User"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Patch("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async updateFragmentAnnotations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        set: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "User",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"User"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Delete("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async deleteFragmentAnnotations(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
         disconnect: body,
       },
     };

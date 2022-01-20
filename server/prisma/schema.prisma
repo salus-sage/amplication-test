@@ -8,64 +8,90 @@ generator client {
 }
 
 model User {
-  contributor Project[] @relation(name: "collaborators")
-  createdAt   DateTime  @default(now())
-  firstName   String?
-  id          String    @id @default(cuid())
-  lastName    String?
-  password    String
-  projects    Project[] @relation(name: "owner")
-  roles       String[]
-  updatedAt   DateTime  @updatedAt
-  username    String    @unique
+  contributor         User[]               @relation(name: "contributor")
+  createdAt           DateTime             @default(now())
+  fragmentAnnotations FragmentAnnotation[]
+  fullName            String?
+  id                  String               @id @default(cuid())
+  user                User?                @relation(name: "contributor", fields: [userId], references: [id])
+  userId              String?
+  password            String
+  projects            Project[]
+  roles               String[]
+  updatedAt           DateTime             @updatedAt
+  username            String               @unique
 }
 
 model Project {
-  collaborators User[]        @relation(name: "collaborators")
-  createdAt     DateTime      @default(now())
-  id            String        @id @default(cuid())
-  media         MediaRecord[]
-  name          String
-  owner         User          @relation(name: "owner", fields: [ownerId], references: [id])
-  ownerId       String
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime      @default(now())
+  id        String        @id @default(cuid())
+  media     MediaRecord[]
+  name      String
+  owner     User          @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  updatedAt DateTime      @updatedAt
 }
 
 model Label {
-  createdAt    DateTime      @default(now())
-  id           String        @id @default(cuid())
-  labelName    String
-  mediaRecords MediaRecord[]
-  updatedAt    DateTime      @updatedAt
+  createdAt           DateTime             @default(now())
+  fragmentAnnotations FragmentAnnotation[]
+  id                  String               @id @default(cuid())
+  labelName           String
+  mediaRecords        MediaRecord[]
+  updatedAt           DateTime             @updatedAt
 }
 
 model MediaRecord {
-  createdAt   DateTime  @default(now())
-  description String?
-  filename    String?
-  id          String    @id @default(cuid())
-  labels      Label[]
-  location    String?
-  projects    Project[]
-  tags        Tag[]
-  type        String?
-  updatedAt   DateTime  @updatedAt
-  url         String
+  createdAt           DateTime             @default(now())
+  description         String?
+  filename            String?
+  fragmentAnnotations FragmentAnnotation[]
+  id                  String               @id @default(cuid())
+  labels              Label[]
+  location            String?
+  projects            Project[]
+  tags                Tag[]
+  type                String?
+  updatedAt           DateTime             @updatedAt
+  url                 String
 }
 
 model Tag {
-  createdAt    DateTime      @default(now())
-  id           String        @id @default(cuid())
-  mediaRecords MediaRecord[]
-  updatedAt    DateTime      @updatedAt
-  value        String?
+  createdAt           DateTime             @default(now())
+  fragmentAnnotations FragmentAnnotation[]
+  id                  String               @id @default(cuid())
+  mediaRecords        MediaRecord[]
+  updatedAt           DateTime             @updatedAt
+  value               String?
 }
 
 model FragmentAnnotation {
-  createdAt    DateTime @default(now())
-  id           String   @id @default(cuid())
-  targetFormat String?
-  targetId     String?
-  targetSrc    String
-  updatedAt    DateTime @updatedAt
+  createdAt          DateTime                            @default(now())
+  creator            User?                               @relation(fields: [creatorId], references: [id])
+  creatorId          String?
+  id                 String                              @id @default(cuid())
+  bodyLabels         Label[]
+  mediaRecord        MediaRecord[]
+  bodyPurpose        EnumFragmentAnnotationBodyPurpose?
+  selectorConformsTo String?
+  selectorType       EnumFragmentAnnotationSelectorType?
+  selectorValue      String?
+  bodyTags           Tag[]
+  targetFormat       String?
+  targetId           String?
+  targetSrc          String
+  updatedAt          DateTime                            @updatedAt
+}
+
+enum EnumFragmentAnnotationBodyPurpose {
+  Tagging
+  Commenting
+  Describing
+}
+
+enum EnumFragmentAnnotationSelectorType {
+  FragmentSelector
+  CssSelector
+  XPathSelector
+  TextQuoteSelector
 }
