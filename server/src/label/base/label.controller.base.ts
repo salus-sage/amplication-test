@@ -15,6 +15,8 @@ import { LabelWhereUniqueInput } from "./LabelWhereUniqueInput";
 import { LabelFindManyArgs } from "./LabelFindManyArgs";
 import { LabelUpdateInput } from "./LabelUpdateInput";
 import { Label } from "./Label";
+import { FragmentAnnotationWhereInput } from "../../fragmentAnnotation/base/FragmentAnnotationWhereInput";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 import { MediaRecordWhereInput } from "../../mediaRecord/base/MediaRecordWhereInput";
 import { MediaRecord } from "../../mediaRecord/base/MediaRecord";
 @swagger.ApiBearerAuth()
@@ -247,6 +249,183 @@ export class LabelControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Get("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "Label",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiQuery({
+    type: () => FragmentAnnotationWhereInput,
+    style: "deepObject",
+    explode: true,
+  })
+  async findManyFragmentAnnotations(
+    @common.Req() request: Request,
+    @common.Param() params: LabelWhereUniqueInput,
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<FragmentAnnotation[]> {
+    const query: FragmentAnnotationWhereInput = request.query;
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "FragmentAnnotation",
+    });
+    const results = await this.service.findFragmentAnnotations(params.id, {
+      where: query,
+      select: {
+        createdAt: true,
+        id: true,
+        targetFormat: true,
+        targetId: true,
+        targetSrc: true,
+        updatedAt: true,
+      },
+    });
+    return results.map((result) => permission.filter(result));
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Post("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "Label",
+    action: "update",
+    possession: "any",
+  })
+  async createFragmentAnnotations(
+    @common.Param() params: LabelWhereUniqueInput,
+    @common.Body() body: LabelWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        connect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Label",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Label"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Patch("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "Label",
+    action: "update",
+    possession: "any",
+  })
+  async updateFragmentAnnotations(
+    @common.Param() params: LabelWhereUniqueInput,
+    @common.Body() body: LabelWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        set: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Label",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Label"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Delete("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "Label",
+    action: "update",
+    possession: "any",
+  })
+  async deleteFragmentAnnotations(
+    @common.Param() params: LabelWhereUniqueInput,
+    @common.Body() body: LabelWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        disconnect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "Label",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"Label"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 
   @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
