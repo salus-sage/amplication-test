@@ -1,9 +1,20 @@
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, IsOptional } from "class-validator";
+import { Project } from "../../project/base/Project";
+import { ValidateNested, IsOptional, IsDate, IsString } from "class-validator";
 import { Type } from "class-transformer";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 @ObjectType()
 class User {
+  @ApiProperty({
+    required: false,
+    type: () => [Project],
+  })
+  @ValidateNested()
+  @Type(() => Project)
+  @IsOptional()
+  contributor?: Array<Project>;
+
   @ApiProperty({
     required: true,
   })
@@ -14,6 +25,15 @@ class User {
 
   @ApiProperty({
     required: false,
+    type: () => [FragmentAnnotation],
+  })
+  @ValidateNested()
+  @Type(() => FragmentAnnotation)
+  @IsOptional()
+  fragmentAnnotations?: Array<FragmentAnnotation>;
+
+  @ApiProperty({
+    required: false,
     type: String,
   })
   @IsString()
@@ -21,7 +41,7 @@ class User {
   @Field(() => String, {
     nullable: true,
   })
-  firstName!: string | null;
+  fullName!: string | null;
 
   @ApiProperty({
     required: true,
@@ -33,14 +53,12 @@ class User {
 
   @ApiProperty({
     required: false,
-    type: String,
+    type: () => [Project],
   })
-  @IsString()
+  @ValidateNested()
+  @Type(() => Project)
   @IsOptional()
-  @Field(() => String, {
-    nullable: true,
-  })
-  lastName!: string | null;
+  projects?: Array<Project>;
 
   @ApiProperty({
     required: true,

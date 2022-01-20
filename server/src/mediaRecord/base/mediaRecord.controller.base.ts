@@ -15,6 +15,8 @@ import { MediaRecordWhereUniqueInput } from "./MediaRecordWhereUniqueInput";
 import { MediaRecordFindManyArgs } from "./MediaRecordFindManyArgs";
 import { MediaRecordUpdateInput } from "./MediaRecordUpdateInput";
 import { MediaRecord } from "./MediaRecord";
+import { FragmentAnnotationWhereInput } from "../../fragmentAnnotation/base/FragmentAnnotationWhereInput";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 import { LabelWhereInput } from "../../label/base/LabelWhereInput";
 import { Label } from "../../label/base/Label";
 import { ProjectWhereInput } from "../../project/base/ProjectWhereInput";
@@ -278,6 +280,194 @@ export class MediaRecordControllerBase {
     defaultAuthGuard.DefaultAuthGuard,
     nestAccessControl.ACGuard
   )
+  @common.Get("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "MediaRecord",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiQuery({
+    type: () => FragmentAnnotationWhereInput,
+    style: "deepObject",
+    explode: true,
+  })
+  async findManyFragmentAnnotations(
+    @common.Req() request: Request,
+    @common.Param() params: MediaRecordWhereUniqueInput,
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<FragmentAnnotation[]> {
+    const query: FragmentAnnotationWhereInput = request.query;
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "FragmentAnnotation",
+    });
+    const results = await this.service.findFragmentAnnotations(params.id, {
+      where: query,
+      select: {
+        createdAt: true,
+
+        creator: {
+          select: {
+            id: true,
+          },
+        },
+
+        id: true,
+        bodyPurpose: true,
+        selectorConformsTo: true,
+        selectorType: true,
+        selectorValue: true,
+        targetFormat: true,
+        targetId: true,
+        targetSrc: true,
+        updatedAt: true,
+      },
+    });
+    return results.map((result) => permission.filter(result));
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Post("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "MediaRecord",
+    action: "update",
+    possession: "any",
+  })
+  async createFragmentAnnotations(
+    @common.Param() params: MediaRecordWhereUniqueInput,
+    @common.Body() body: MediaRecordWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        connect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "MediaRecord",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"MediaRecord"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Patch("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "MediaRecord",
+    action: "update",
+    possession: "any",
+  })
+  async updateFragmentAnnotations(
+    @common.Param() params: MediaRecordWhereUniqueInput,
+    @common.Body() body: MediaRecordWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        set: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "MediaRecord",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"MediaRecord"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
+  @common.Delete("/:id/fragmentAnnotations")
+  @nestAccessControl.UseRoles({
+    resource: "MediaRecord",
+    action: "update",
+    possession: "any",
+  })
+  async deleteFragmentAnnotations(
+    @common.Param() params: MediaRecordWhereUniqueInput,
+    @common.Body() body: MediaRecordWhereUniqueInput[],
+    @nestAccessControl.UserRoles() userRoles: string[]
+  ): Promise<void> {
+    const data = {
+      fragmentAnnotations: {
+        disconnect: body,
+      },
+    };
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "update",
+      possession: "any",
+      resource: "MediaRecord",
+    });
+    const invalidAttributes = abacUtil.getInvalidAttributes(permission, data);
+    if (invalidAttributes.length) {
+      const roles = userRoles
+        .map((role: string) => JSON.stringify(role))
+        .join(",");
+      throw new common.ForbiddenException(
+        `Updating the relationship: ${
+          invalidAttributes[0]
+        } of ${"MediaRecord"} is forbidden for roles: ${roles}`
+      );
+    }
+    await this.service.update({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.UseInterceptors(nestMorgan.MorganInterceptor("combined"))
+  @common.UseGuards(
+    defaultAuthGuard.DefaultAuthGuard,
+    nestAccessControl.ACGuard
+  )
   @common.Get("/:id/labels")
   @nestAccessControl.UseRoles({
     resource: "MediaRecord",
@@ -482,6 +672,13 @@ export class MediaRecordControllerBase {
         createdAt: true,
         id: true,
         name: true,
+
+        owner: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });

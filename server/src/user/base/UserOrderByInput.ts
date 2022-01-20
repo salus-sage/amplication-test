@@ -23,7 +23,7 @@ class UserOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-  firstName?: SortOrder;
+  fullName?: SortOrder;
 
   @ApiProperty({
     required: false,
@@ -33,15 +33,6 @@ class UserOrderByInput {
     nullable: true,
   })
   id?: SortOrder;
-
-  @ApiProperty({
-    required: false,
-    enum: ["Asc", "Desc"],
-  })
-  @Field(() => SortOrder, {
-    nullable: true,
-  })
-  lastName?: SortOrder;
 
   @ApiProperty({
     required: false,

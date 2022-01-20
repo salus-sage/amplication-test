@@ -1,5 +1,5 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, Project, MediaRecord } from "@prisma/client";
+import { Prisma, Project, User, MediaRecord } from "@prisma/client";
 
 export class ProjectServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -36,6 +36,17 @@ export class ProjectServiceBase {
     return this.prisma.project.delete(args);
   }
 
+  async findCollaborators(
+    parentId: string,
+    args: Prisma.UserFindManyArgs
+  ): Promise<User[]> {
+    return this.prisma.project
+      .findUnique({
+        where: { id: parentId },
+      })
+      .collaborators(args);
+  }
+
   async findMedia(
     parentId: string,
     args: Prisma.MediaRecordFindManyArgs
@@ -45,5 +56,13 @@ export class ProjectServiceBase {
         where: { id: parentId },
       })
       .media(args);
+  }
+
+  async getOwner(parentId: string): Promise<User | null> {
+    return this.prisma.project
+      .findUnique({
+        where: { id: parentId },
+      })
+      .owner();
   }
 }
