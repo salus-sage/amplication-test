@@ -4,9 +4,10 @@ import { ProjectModule } from "./project/project.module";
 import { LabelModule } from "./label/label.module";
 import { MediaRecordModule } from "./mediaRecord/mediaRecord.module";
 import { TagModule } from "./tag/tag.module";
+import { FragmentAnnotationModule } from "./fragmentAnnotation/fragmentAnnotation.module";
+import { HealthModule } from "./health/health.module";
 import { ACLModule } from "./auth/acl.module";
 import { AuthModule } from "./auth/auth.module";
-import { HealthModule } from "./health/health.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
 import { MorganModule } from "nest-morgan";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -22,9 +23,10 @@ import { GraphQLModule } from "@nestjs/graphql";
     LabelModule,
     MediaRecordModule,
     TagModule,
+    FragmentAnnotationModule,
+    HealthModule,
     ACLModule,
     AuthModule,
-    HealthModule,
     SecretsManagerModule,
     MorganModule,
     ConfigModule.forRoot({ isGlobal: true }),

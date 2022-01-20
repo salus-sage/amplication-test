@@ -482,6 +482,13 @@ export class MediaRecordControllerBase {
         createdAt: true,
         id: true,
         name: true,
+
+        owner: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });

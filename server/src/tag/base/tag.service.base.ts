@@ -1,5 +1,5 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, Tag, MediaRecord } from "@prisma/client";
+import { Prisma, Tag, FragmentAnnotation, MediaRecord } from "@prisma/client";
 
 export class TagServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -34,6 +34,17 @@ export class TagServiceBase {
     args: Prisma.SelectSubset<T, Prisma.TagDeleteArgs>
   ): Promise<Tag> {
     return this.prisma.tag.delete(args);
+  }
+
+  async findFragmentAnnotations(
+    parentId: string,
+    args: Prisma.FragmentAnnotationFindManyArgs
+  ): Promise<FragmentAnnotation[]> {
+    return this.prisma.tag
+      .findUnique({
+        where: { id: parentId },
+      })
+      .fragmentAnnotations(args);
   }
 
   async findMediaRecords(
