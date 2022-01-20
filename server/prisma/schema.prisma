@@ -8,22 +8,27 @@ generator client {
 }
 
 model User {
-  createdAt DateTime @default(now())
-  firstName String?
-  id        String   @id @default(cuid())
-  lastName  String?
-  password  String
-  roles     String[]
-  updatedAt DateTime @updatedAt
-  username  String   @unique
+  contributor Project[] @relation(name: "collaborators")
+  createdAt   DateTime  @default(now())
+  firstName   String?
+  id          String    @id @default(cuid())
+  lastName    String?
+  password    String
+  projects    Project[] @relation(name: "owner")
+  roles       String[]
+  updatedAt   DateTime  @updatedAt
+  username    String    @unique
 }
 
 model Project {
-  createdAt DateTime      @default(now())
-  id        String        @id @default(cuid())
-  media     MediaRecord[]
-  name      String
-  updatedAt DateTime      @updatedAt
+  collaborators User[]        @relation(name: "collaborators")
+  createdAt     DateTime      @default(now())
+  id            String        @id @default(cuid())
+  media         MediaRecord[]
+  name          String
+  owner         User          @relation(name: "owner", fields: [ownerId], references: [id])
+  ownerId       String
+  updatedAt     DateTime      @updatedAt
 }
 
 model Label {
@@ -54,4 +59,13 @@ model Tag {
   mediaRecords MediaRecord[]
   updatedAt    DateTime      @updatedAt
   value        String?
+}
+
+model FragmentAnnotation {
+  createdAt    DateTime @default(now())
+  id           String   @id @default(cuid())
+  targetFormat String?
+  targetId     String?
+  targetSrc    String
+  updatedAt    DateTime @updatedAt
 }
