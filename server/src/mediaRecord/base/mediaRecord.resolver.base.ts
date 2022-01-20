@@ -14,6 +14,8 @@ import { DeleteMediaRecordArgs } from "./DeleteMediaRecordArgs";
 import { MediaRecordFindManyArgs } from "./MediaRecordFindManyArgs";
 import { MediaRecordFindUniqueArgs } from "./MediaRecordFindUniqueArgs";
 import { MediaRecord } from "./MediaRecord";
+import { FragmentAnnotationFindManyArgs } from "../../fragmentAnnotation/base/FragmentAnnotationFindManyArgs";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 import { LabelFindManyArgs } from "../../label/base/LabelFindManyArgs";
 import { Label } from "../../label/base/Label";
 import { ProjectFindManyArgs } from "../../project/base/ProjectFindManyArgs";
@@ -197,6 +199,32 @@ export class MediaRecordResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => [FragmentAnnotation])
+  @nestAccessControl.UseRoles({
+    resource: "MediaRecord",
+    action: "read",
+    possession: "any",
+  })
+  async fragmentAnnotations(
+    @graphql.Parent() parent: MediaRecord,
+    @graphql.Args() args: FragmentAnnotationFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<FragmentAnnotation[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "FragmentAnnotation",
+    });
+    const results = await this.service.findFragmentAnnotations(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
   }
 
   @graphql.ResolveField(() => [Label])

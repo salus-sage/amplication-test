@@ -1,5 +1,12 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, MediaRecord, Label, Project, Tag } from "@prisma/client";
+import {
+  Prisma,
+  MediaRecord,
+  FragmentAnnotation,
+  Label,
+  Project,
+  Tag,
+} from "@prisma/client";
 
 export class MediaRecordServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -34,6 +41,17 @@ export class MediaRecordServiceBase {
     args: Prisma.SelectSubset<T, Prisma.MediaRecordDeleteArgs>
   ): Promise<MediaRecord> {
     return this.prisma.mediaRecord.delete(args);
+  }
+
+  async findFragmentAnnotations(
+    parentId: string,
+    args: Prisma.FragmentAnnotationFindManyArgs
+  ): Promise<FragmentAnnotation[]> {
+    return this.prisma.mediaRecord
+      .findUnique({
+        where: { id: parentId },
+      })
+      .fragmentAnnotations(args);
   }
 
   async findLabels(

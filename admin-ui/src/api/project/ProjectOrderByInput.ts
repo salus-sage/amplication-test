@@ -4,5 +4,6 @@ export type ProjectOrderByInput = {
   createdAt?: SortOrder;
   id?: SortOrder;
   name?: SortOrder;
+  ownerId?: SortOrder;
   updatedAt?: SortOrder;
 };

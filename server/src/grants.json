@@ -6,19 +6,25 @@
     "attributes": "*"
   },
   {
-    "role": "user",
+    "role": "admin",
+    "resource": "User",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "User",
     "action": "create:any",
     "attributes": "*"
   },
   {
-    "role": "user",
+    "role": "admin",
     "resource": "User",
     "action": "update:any",
     "attributes": "*"
   },
   {
-    "role": "user",
+    "role": "admin",
     "resource": "User",
     "action": "delete:any",
     "attributes": "*"
@@ -30,7 +36,19 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "User",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Project",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Project",
     "action": "read:own",
     "attributes": "*"
@@ -42,13 +60,31 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Project",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
     "resource": "Project",
     "action": "update:any",
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Project",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Project",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Project",
     "action": "delete:any",
     "attributes": "*"
@@ -60,7 +96,19 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Project",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Label",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Label",
     "action": "read:own",
     "attributes": "*"
@@ -72,13 +120,31 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Label",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
     "resource": "Label",
     "action": "update:any",
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Label",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Label",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Label",
     "action": "delete:any",
     "attributes": "*"
@@ -90,7 +156,19 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Label",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "MediaRecord",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "MediaRecord",
     "action": "read:own",
     "attributes": "*"
@@ -102,13 +180,25 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "MediaRecord",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
     "resource": "MediaRecord",
     "action": "update:any",
     "attributes": "*"
   },
   {
-    "role": "user",
+    "role": "admin",
+    "resource": "MediaRecord",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "MediaRecord",
     "action": "delete:any",
     "attributes": "*"
@@ -120,7 +210,19 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "MediaRecord",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Tag",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Tag",
     "action": "read:own",
     "attributes": "*"
@@ -132,7 +234,19 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Tag",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
+    "resource": "Tag",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
     "resource": "Tag",
     "action": "update:any",
     "attributes": "*"
@@ -144,8 +258,74 @@
     "attributes": "*"
   },
   {
+    "role": "admin",
+    "resource": "Tag",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
     "role": "user",
     "resource": "Tag",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "Tag",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "FragmentAnnotation",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "FragmentAnnotation",
+    "action": "read:own",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "FragmentAnnotation",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "FragmentAnnotation",
+    "action": "create:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "FragmentAnnotation",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "FragmentAnnotation",
+    "action": "update:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "FragmentAnnotation",
+    "action": "delete:any",
+    "attributes": "*"
+  },
+  {
+    "role": "user",
+    "resource": "FragmentAnnotation",
+    "action": "read:any",
+    "attributes": "*"
+  },
+  {
+    "role": "admin",
+    "resource": "FragmentAnnotation",
     "action": "read:any",
     "attributes": "*"
   }
