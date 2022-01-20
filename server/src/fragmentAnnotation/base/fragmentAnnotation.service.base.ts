@@ -1,5 +1,12 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, FragmentAnnotation } from "@prisma/client";
+import {
+  Prisma,
+  FragmentAnnotation,
+  Label,
+  MediaRecord,
+  Tag,
+  User,
+} from "@prisma/client";
 
 export class FragmentAnnotationServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -34,5 +41,46 @@ export class FragmentAnnotationServiceBase {
     args: Prisma.SelectSubset<T, Prisma.FragmentAnnotationDeleteArgs>
   ): Promise<FragmentAnnotation> {
     return this.prisma.fragmentAnnotation.delete(args);
+  }
+
+  async findBodyLabels(
+    parentId: string,
+    args: Prisma.LabelFindManyArgs
+  ): Promise<Label[]> {
+    return this.prisma.fragmentAnnotation
+      .findUnique({
+        where: { id: parentId },
+      })
+      .bodyLabels(args);
+  }
+
+  async findMediaRecord(
+    parentId: string,
+    args: Prisma.MediaRecordFindManyArgs
+  ): Promise<MediaRecord[]> {
+    return this.prisma.fragmentAnnotation
+      .findUnique({
+        where: { id: parentId },
+      })
+      .mediaRecord(args);
+  }
+
+  async findBodyTags(
+    parentId: string,
+    args: Prisma.TagFindManyArgs
+  ): Promise<Tag[]> {
+    return this.prisma.fragmentAnnotation
+      .findUnique({
+        where: { id: parentId },
+      })
+      .bodyTags(args);
+  }
+
+  async getCreator(parentId: string): Promise<User | null> {
+    return this.prisma.fragmentAnnotation
+      .findUnique({
+        where: { id: parentId },
+      })
+      .creator();
   }
 }

@@ -23,7 +23,52 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  creatorId?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   id?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  bodyPurpose?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  selectorConformsTo?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  selectorType?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  selectorValue?: SortOrder;
 
   @ApiProperty({
     required: false,
@@ -50,7 +95,6 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-
   targetSrc?: SortOrder;
 
   @ApiProperty({
@@ -60,7 +104,6 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
-
   updatedAt?: SortOrder;
 }
 

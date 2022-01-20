@@ -1,6 +1,8 @@
+import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
+
 export type UserUpdateInput = {
-  firstName?: string | null;
-  lastName?: string | null;
+  fullName?: string | null;
+  user?: UserWhereUniqueInput | null;
   password?: string;
   roles?: Array<string>;
   username?: string;

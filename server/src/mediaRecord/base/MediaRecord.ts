@@ -2,6 +2,7 @@ import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsString, IsOptional, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
+import { FragmentAnnotation } from "../../fragmentAnnotation/base/FragmentAnnotation";
 import { Label } from "../../label/base/Label";
 import { Project } from "../../project/base/Project";
 import { Tag } from "../../tag/base/Tag";
@@ -36,6 +37,15 @@ class MediaRecord {
     nullable: true,
   })
   filename!: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => [FragmentAnnotation],
+  })
+  @ValidateNested()
+  @Type(() => FragmentAnnotation)
+  @IsOptional()
+  fragmentAnnotations?: Array<FragmentAnnotation>;
 
   @ApiProperty({
     required: true,

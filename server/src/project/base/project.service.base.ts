@@ -1,5 +1,5 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, Project, User, MediaRecord } from "@prisma/client";
+import { Prisma, Project, MediaRecord, User } from "@prisma/client";
 
 export class ProjectServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -34,17 +34,6 @@ export class ProjectServiceBase {
     args: Prisma.SelectSubset<T, Prisma.ProjectDeleteArgs>
   ): Promise<Project> {
     return this.prisma.project.delete(args);
-  }
-
-  async findCollaborators(
-    parentId: string,
-    args: Prisma.UserFindManyArgs
-  ): Promise<User[]> {
-    return this.prisma.project
-      .findUnique({
-        where: { id: parentId },
-      })
-      .collaborators(args);
   }
 
   async findMedia(

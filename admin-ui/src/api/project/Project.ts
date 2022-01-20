@@ -1,8 +1,7 @@
-import { User } from "../user/User";
 import { MediaRecord } from "../mediaRecord/MediaRecord";
+import { User } from "../user/User";
 
 export type Project = {
-  collaborators?: Array<User>;
   createdAt: Date;
   id: string;
   media?: Array<MediaRecord>;

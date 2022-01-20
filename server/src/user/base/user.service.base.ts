@@ -1,5 +1,5 @@
 import { PrismaService } from "nestjs-prisma";
-import { Prisma, User, Project } from "@prisma/client";
+import { Prisma, User, FragmentAnnotation, Project } from "@prisma/client";
 import { PasswordService } from "../../auth/password.service";
 import { transformStringFieldUpdateInput } from "../../prisma.util";
 
@@ -63,13 +63,24 @@ export class UserServiceBase {
 
   async findContributor(
     parentId: string,
-    args: Prisma.ProjectFindManyArgs
-  ): Promise<Project[]> {
+    args: Prisma.UserFindManyArgs
+  ): Promise<User[]> {
     return this.prisma.user
       .findUnique({
         where: { id: parentId },
       })
       .contributor(args);
+  }
+
+  async findFragmentAnnotations(
+    parentId: string,
+    args: Prisma.FragmentAnnotationFindManyArgs
+  ): Promise<FragmentAnnotation[]> {
+    return this.prisma.user
+      .findUnique({
+        where: { id: parentId },
+      })
+      .fragmentAnnotations(args);
   }
 
   async findProjects(
@@ -81,5 +92,13 @@ export class UserServiceBase {
         where: { id: parentId },
       })
       .projects(args);
+  }
+
+  async getUser(parentId: string): Promise<User | null> {
+    return this.prisma.user
+      .findUnique({
+        where: { id: parentId },
+      })
+      .user();
   }
 }

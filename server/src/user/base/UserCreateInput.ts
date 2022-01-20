@@ -1,6 +1,8 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { IsString, IsOptional, ValidateNested } from "class-validator";
+import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
+import { Type } from "class-transformer";
 @InputType()
 class UserCreateInput {
   @ApiProperty({
@@ -12,18 +14,19 @@ class UserCreateInput {
   @Field(() => String, {
     nullable: true,
   })
-  firstName?: string | null;
+  fullName?: string | null;
 
   @ApiProperty({
     required: false,
-    type: String,
+    type: () => UserWhereUniqueInput,
   })
-  @IsString()
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
   @IsOptional()
-  @Field(() => String, {
+  @Field(() => UserWhereUniqueInput, {
     nullable: true,
   })
-  lastName?: string | null;
+  user?: UserWhereUniqueInput | null;
 
   @ApiProperty({
     required: true,
