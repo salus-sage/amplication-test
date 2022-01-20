@@ -38,5 +38,18 @@ class FragmentAnnotationWhereInput {
     nullable: true,
   })
   targetId?: StringNullableFilter;
+
+
+  @ApiProperty({
+    required: false,
+    type: StringFilter,
+  })
+  @Type(() => StringFilter)
+  @IsOptional()
+  @Field(() => StringFilter, {
+    nullable: true,
+  })
+  targetSrc?: StringFilter;
+
 }
 export { FragmentAnnotationWhereInput };

@@ -18,6 +18,7 @@ export const FragmentAnnotationList = (
         <TextField label="ID" source="id" />
         <TextField label="target_format" source="targetFormat" />
         <TextField label="target_id" source="targetId" />
+        <TextField label="target_src" source="targetSrc" />
         <DateField source="updatedAt" label="Updated At" />
       </Datagrid>
     </List>

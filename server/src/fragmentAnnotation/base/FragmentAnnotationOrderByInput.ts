@@ -50,6 +50,17 @@ class FragmentAnnotationOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+
+  targetSrc?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["Asc", "Desc"],
+  })
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+
   updatedAt?: SortOrder;
 }
 

@@ -5,5 +5,6 @@ export type FragmentAnnotationOrderByInput = {
   id?: SortOrder;
   targetFormat?: SortOrder;
   targetId?: SortOrder;
+  targetSrc?: SortOrder;
   updatedAt?: SortOrder;
 };

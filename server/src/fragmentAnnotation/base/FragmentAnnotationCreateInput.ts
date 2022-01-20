@@ -24,5 +24,14 @@ class FragmentAnnotationCreateInput {
     nullable: true,
   })
   targetId?: string | null;
+
+
+  @ApiProperty({
+    required: true,
+    type: String,
+  })
+  @IsString()
+  @Field(() => String)
+  targetSrc!: string;
 }
 export { FragmentAnnotationCreateInput };

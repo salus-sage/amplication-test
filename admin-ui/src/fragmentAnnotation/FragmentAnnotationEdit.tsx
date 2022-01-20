@@ -9,6 +9,7 @@ export const FragmentAnnotationEdit = (
       <SimpleForm>
         <TextInput label="target_format" source="targetFormat" />
         <TextInput label="target_id" source="targetId" />
+        <TextInput label="target_src" source="targetSrc" />
       </SimpleForm>
     </Edit>
   );

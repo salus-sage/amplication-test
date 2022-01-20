@@ -3,5 +3,6 @@ export type FragmentAnnotation = {
   id: string;
   targetFormat: string | null;
   targetId: string | null;
+  targetSrc: string;
   updatedAt: Date;
 };

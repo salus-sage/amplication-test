@@ -64,6 +64,7 @@ export class FragmentAnnotationControllerBase {
         id: true,
         targetFormat: true,
         targetId: true,
+        targetSrc: true,
         updatedAt: true,
       },
     });
@@ -106,6 +107,7 @@ export class FragmentAnnotationControllerBase {
         id: true,
         targetFormat: true,
         targetId: true,
+        targetSrc: true,
         updatedAt: true,
       },
     });
@@ -143,6 +145,7 @@ export class FragmentAnnotationControllerBase {
         id: true,
         targetFormat: true,
         targetId: true,
+        targetSrc: true,
         updatedAt: true,
       },
     });
@@ -201,6 +204,7 @@ export class FragmentAnnotationControllerBase {
           id: true,
           targetFormat: true,
           targetId: true,
+          targetSrc: true,
           updatedAt: true,
         },
       });
@@ -239,6 +243,7 @@ export class FragmentAnnotationControllerBase {
           id: true,
           targetFormat: true,
           targetId: true,
+          targetSrc: true,
           updatedAt: true,
         },
       });
