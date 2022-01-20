@@ -1,10 +1,20 @@
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString, ValidateNested, IsOptional } from "class-validator";
+import { User } from "../../user/base/User";
+import { ValidateNested, IsOptional, IsDate, IsString } from "class-validator";
 import { Type } from "class-transformer";
 import { MediaRecord } from "../../mediaRecord/base/MediaRecord";
 @ObjectType()
 class Project {
+  @ApiProperty({
+    required: false,
+    type: () => [User],
+  })
+  @ValidateNested()
+  @Type(() => User)
+  @IsOptional()
+  collaborators?: Array<User>;
+
   @ApiProperty({
     required: true,
   })
@@ -37,6 +47,14 @@ class Project {
   @IsString()
   @Field(() => String)
   name!: string;
+
+  @ApiProperty({
+    required: true,
+    type: () => User,
+  })
+  @ValidateNested()
+  @Type(() => User)
+  owner?: User;
 
   @ApiProperty({
     required: true,

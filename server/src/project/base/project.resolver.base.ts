@@ -14,6 +14,8 @@ import { DeleteProjectArgs } from "./DeleteProjectArgs";
 import { ProjectFindManyArgs } from "./ProjectFindManyArgs";
 import { ProjectFindUniqueArgs } from "./ProjectFindUniqueArgs";
 import { Project } from "./Project";
+import { UserFindManyArgs } from "../../user/base/UserFindManyArgs";
+import { User } from "../../user/base/User";
 import { MediaRecordFindManyArgs } from "../../mediaRecord/base/MediaRecordFindManyArgs";
 import { MediaRecord } from "../../mediaRecord/base/MediaRecord";
 import { ProjectService } from "../project.service";
@@ -122,7 +124,13 @@ export class ProjectResolverBase {
     // @ts-ignore
     return await this.service.create({
       ...args,
-      data: args.data,
+      data: {
+        ...args.data,
+
+        owner: {
+          connect: args.data.owner,
+        },
+      },
     });
   }
 
@@ -161,7 +169,13 @@ export class ProjectResolverBase {
       // @ts-ignore
       return await this.service.update({
         ...args,
-        data: args.data,
+        data: {
+          ...args.data,
+
+          owner: {
+            connect: args.data.owner,
+          },
+        },
       });
     } catch (error) {
       if (isRecordNotFoundError(error)) {
@@ -195,6 +209,32 @@ export class ProjectResolverBase {
     }
   }
 
+  @graphql.ResolveField(() => [User])
+  @nestAccessControl.UseRoles({
+    resource: "Project",
+    action: "read",
+    possession: "any",
+  })
+  async collaborators(
+    @graphql.Parent() parent: Project,
+    @graphql.Args() args: UserFindManyArgs,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<User[]> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "User",
+    });
+    const results = await this.service.findCollaborators(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results.map((result) => permission.filter(result));
+  }
+
   @graphql.ResolveField(() => [MediaRecord])
   @nestAccessControl.UseRoles({
     resource: "Project",
@@ -219,5 +259,29 @@ export class ProjectResolverBase {
     }
 
     return results.map((result) => permission.filter(result));
+  }
+
+  @graphql.ResolveField(() => User, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "Project",
+    action: "read",
+    possession: "any",
+  })
+  async owner(
+    @graphql.Parent() parent: Project,
+    @gqlUserRoles.UserRoles() userRoles: string[]
+  ): Promise<User | null> {
+    const permission = this.rolesBuilder.permission({
+      role: userRoles,
+      action: "read",
+      possession: "any",
+      resource: "User",
+    });
+    const result = await this.service.getOwner(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return permission.filter(result);
   }
 }
