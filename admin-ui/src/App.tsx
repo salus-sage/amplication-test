@@ -25,6 +25,10 @@ import { TagList } from "./tag/TagList";
 import { TagCreate } from "./tag/TagCreate";
 import { TagEdit } from "./tag/TagEdit";
 import { TagShow } from "./tag/TagShow";
+import { FragmentAnnotationList } from "./fragmentAnnotation/FragmentAnnotationList";
+import { FragmentAnnotationCreate } from "./fragmentAnnotation/FragmentAnnotationCreate";
+import { FragmentAnnotationEdit } from "./fragmentAnnotation/FragmentAnnotationEdit";
+import { FragmentAnnotationShow } from "./fragmentAnnotation/FragmentAnnotationShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
 const App = (): React.ReactElement => {
@@ -85,6 +89,13 @@ const App = (): React.ReactElement => {
           edit={TagEdit}
           create={TagCreate}
           show={TagShow}
+        />
+        <Resource
+          name="FragmentAnnotation"
+          list={FragmentAnnotationList}
+          edit={FragmentAnnotationEdit}
+          create={FragmentAnnotationCreate}
+          show={FragmentAnnotationShow}
         />
       </Admin>
     </div>
